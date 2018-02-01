@@ -55,7 +55,7 @@ else
 		echo
 		if [ "$ans" == "y" ]; then
 			echo -e -n "\nDeleting...\n"
-			rm -r "$INSTALLPATH"
+			rm -rf "$INSTALLPATH"
 			if [ -d "$INSTALLPATH" ]; then
 				echo "ERROR DELETING: COULD NOT DELETE $INSTALLPATH"
 				echo "ABORT"
