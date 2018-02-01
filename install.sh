@@ -30,6 +30,7 @@ else
 	INSTALLPATH="/home/$USER/Godot"
 	if [ -d "$INSTALLPATH" ]; then
 		echo -e -n "WARNING: PREVIOUS GODOT INSTALL FILE FOUND AT $INSTALLPATH\n"
+		ls "$INSTALLPATH"
 		echo -e -n "Delete it? "
 		read -n1 ans
 		echo
@@ -42,9 +43,7 @@ else
 				exit
 			fi
 		else
-			echo -e -n "ERROR: CANNOT INSTALL GODOT IN PREVIOUS INSTALL LOCATION\n"
-			echo -e -n "ABORT"
-			exit
+			echo "Using previous location..."
 		fi
 	fi
 	mkdir "/home/$USER/Godot"
