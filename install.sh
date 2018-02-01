@@ -1,5 +1,17 @@
 #!/bin/bash
 
+install_godot_icon() {
+        if [ ! -f godot.png ]
+        then
+                echo "--- Pulling Godot icon..."
+                wget -O godot.png https://raw.githubusercontent.com/godotengine/godot/master/icon.png
+        else
+                echo "-!- Godot icon already exists!"
+        fi
+        echo "--- Putting image into pixmaps"
+        sudo cp godot.png /usr/share/pixmaps
+}
+
 create_godot_desktop() {
         echo -e -n "[Desktop Entry]\n" > godot.desktop
         echo -e -n "Type=Application\n" >> godot.desktop
@@ -85,7 +97,10 @@ if [ ! -f "$EXECNAME" ]; then
 	echo "ERROR: CANNOT FIND EXEC NAME"
 	echo "ABORT"
 fi
+echo "Creating desktop..."
 create_godot_desktop "$EXECNAME"
+echo "Installing icon..."
+install_godot_icon
 
 
 
