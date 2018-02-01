@@ -16,6 +16,7 @@ create_godot_desktop() {
 
 echo -e -n "Would you like to use a custom Godot install path? "
 read -n1 ans
+echo
 if [ "$ans" == "y" ]; then
 	echo -e -n "\nWhat path(absolute): "
 	read pth
@@ -26,8 +27,27 @@ if [ "$ans" == "y" ]; then
 	fi
 	INSTALLPATH=pth
 else
-	mkdir "/home/$USER/Godot"
 	INSTALLPATH="/home/$USER/Godot"
+	if [ -d "$INSTALLPATH" ]; then
+		echo -e -n "WARNING: PREVIOUS GODOT INSTALL FILE FOUND AT $INSTALLPATH\n"
+		echo -e -n "Delete it? "
+		read -n1 ans
+		echo
+		if [ "$ans" == "y" ]; then
+			echo -e -n "\nDeleting...\n"
+			rm -r "$INSTALLPATH"
+			if [ -d "$INSTALLPATH" ]; then
+				echo "ERROR DELETING: COULD NOT DELETE $INSTALLPATH"
+				echo "ABORT"
+				exit
+			fi
+		else
+			echo -e -n "ERROR: CANNOT INSTALL GODOT IN PREVIOUS INSTALL LOCATION\n"
+			echo -e -n "ABORT"
+			exit
+		fi
+	fi
+	mkdir "/home/$USER/Godot"
 	if [ ! -d "$INSTALLPATH" ]; then
 		echo -e -n "\nERROR CREATING DIRECTORY $INSTALLPATH\n"
 		echo -e -n "ABORT\n"
@@ -40,8 +60,38 @@ cd "$INSTALLPATH"
 ZIPNAME="Godot_v3.0-stable_x11.64.zip"
 EXECNAME="Godot_v3.0-stable_x11.64"
 
+if [ -f "$ZIPNAME" ]; then
+	echo "ERROR: PREVIOUS ZIP FILE FOUND"
+	echo -e -n "Use it? "
+	read -n1 ans
+	echo
+	if [ "$ans" == "n" ]; then
+		echo -e -n "Delete it? "
+		read -n1 ans
+		echo
+		if [ "$ans" == "n" ]; then
+			echo "ERROR: ILLOGICAL LOGIC"
+			echo "ABORT"
+			exit
+		fi
+	else
+		echo "Using..."
+	fi
+else
+	wget "https://downloads.tuxfamily.org/godotengine/3.0/Godot_v3.0-stable_x11.64.zip"
+fi
 
-
-wget "https://downloads.tuxfamily.org/godotengine/3.0/Godot_v3.0-stable_x11.64.zip"
-unzip $ZIPNAME
+unzip "$ZIPNAME"
+if [ ! -f "$EXECNAME" ]; then
+	echo "ERROR: CANNOT FIND EXEC NAME"
+	echo "ABORT"
+fi
 create_godot_desktop "$EXECNAME"
+
+
+
+
+
+
+
+
