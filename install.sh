@@ -1,5 +1,12 @@
 #!/bin/bash
 
+install_godot_desktop() {
+        cp godot.desktop ~/.local/share/applications
+        cp godot.desktop ~/Desktop/
+        sudo chmod +x ~/Desktop/godot.desktop
+        update-desktop-database
+}
+
 install_godot_icon() {
         if [ ! -f godot.png ]
         then
@@ -98,14 +105,9 @@ if [ ! -f "$EXECNAME" ]; then
 	echo "ABORT"
 fi
 echo "Creating desktop..."
-create_godot_desktop "$EXECNAME"
+create_godot_desktop "$INSTALLPATH/$EXECNAME"
 echo "Installing icon..."
 install_godot_icon
-
-
-
-
-
-
-
-
+echo "Installing desktop..."
+install_godot_desktop
+echo "Done."
