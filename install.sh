@@ -8,15 +8,10 @@ install_godot_desktop() {
 }
 
 install_godot_icon() {
-        if [ ! -f godot.png ]
-        then
-                echo "--- Pulling Godot icon..."
+      if [ ! -f godot.png ]; then
                 wget -O godot.png https://raw.githubusercontent.com/godotengine/godot/master/icon.png
-        else
-                echo "-!- Godot icon already exists!"
-        fi
-        echo "--- Putting image into pixmaps"
-        sudo cp godot.png /usr/share/pixmaps
+      fi
+      sudo cp godot.png /usr/share/pixmaps
 }
 
 create_godot_desktop() {
@@ -32,82 +27,30 @@ create_godot_desktop() {
         echo -e -n "Categories=IDE;\n" >> godot.desktop
 }
 
-
-echo -e -n "Would you like to use a custom Godot install path? "
-read -n1 ans
-echo
-if [ "$ans" == "y" ]; then
-	echo -e -n "\nWhat path(absolute): "
-	read pth
-	if [ ! -d "$pth" ]; then
-		echo -e -n "\n\nERROR: PATH $pth DOES NOT EXIST\n"
-		echo -e -n "ABORT\n"
-		exit
-	fi
-	INSTALLPATH=pth
+if [ "$1" == "" ]; then
+  printf "Use --help for usage\n"
+  exit
+elif [ "$1" == "--help" ]; then
+  printf "[first arg] -- Godot binary\n[second arg] -- optional exec name"
+elif [ ! -f "$1" ]; then
+  printf "Could not find Godot binary $1\n"
 else
-	INSTALLPATH="/home/$USER/Godot"
-	if [ -d "$INSTALLPATH" ]; then
-		echo -e -n "WARNING: PREVIOUS GODOT INSTALL FILE FOUND AT $INSTALLPATH\n"
-		ls "$INSTALLPATH"
-		echo -e -n "Delete it? "
-		read -n1 ans
-		echo
-		if [ "$ans" == "y" ]; then
-			echo -e -n "\nDeleting...\n"
-			rm -rf "$INSTALLPATH"
-			if [ -d "$INSTALLPATH" ]; then
-				echo "ERROR DELETING: COULD NOT DELETE $INSTALLPATH"
-				echo "ABORT"
-				exit
-			fi
-		else
-			echo "Using previous location..."
-		fi
-	fi
-	mkdir "/home/$USER/Godot"
-	if [ ! -d "$INSTALLPATH" ]; then
-		echo -e -n "\nERROR CREATING DIRECTORY $INSTALLPATH\n"
-		echo -e -n "ABORT\n"
-		exit
-	fi
+  if [ "$2" == "" ]; then
+    NAME="godot"
+  else
+    NAME="$2"
+  fi
+  printf "Install godot with name $NAME?"
+  read -n1 ans
+  if [ "$ans" != "y" ]; then
+    printf "ans is not 'y', exiting...\n"
+    exit
+  fi
+  sudo cp "$1" "/usr/bin/$NAME"
+  create_godot_desktop "/usr/bin/$NAME"
+  install_godot_desktop
+  install_godot_icon
+  printf "Installed!\n"
+  rm godot.desktop
+  rm godot.png
 fi
-
-cd "$INSTALLPATH"
-
-ZIPNAME="Godot_v3.0-stable_x11.64.zip"
-EXECNAME="Godot_v3.0-stable_x11.64"
-
-if [ -f "$ZIPNAME" ]; then
-	echo "ERROR: PREVIOUS ZIP FILE FOUND"
-	echo -e -n "Use it? "
-	read -n1 ans
-	echo
-	if [ "$ans" == "n" ]; then
-		echo -e -n "Delete it? "
-		read -n1 ans
-		echo
-		if [ "$ans" == "n" ]; then
-			echo "ERROR: ILLOGICAL LOGIC"
-			echo "ABORT"
-			exit
-		fi
-	else
-		echo "Using..."
-	fi
-else
-	wget "https://downloads.tuxfamily.org/godotengine/3.0/Godot_v3.0-stable_x11.64.zip"
-fi
-
-unzip "$ZIPNAME"
-if [ ! -f "$EXECNAME" ]; then
-	echo "ERROR: CANNOT FIND EXEC NAME"
-	echo "ABORT"
-fi
-echo "Creating desktop..."
-create_godot_desktop "$INSTALLPATH/$EXECNAME"
-echo "Installing icon..."
-install_godot_icon
-echo "Installing desktop..."
-install_godot_desktop
-echo "Done."

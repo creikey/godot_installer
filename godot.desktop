@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Godot Game Engine
+GenericName=Godot
+Coment=An open source game engine
+Exec=/home/creikey/Documents/projects/godot_installer/LICENSE
+Icon=godot
+Terminal=false
+Categories=IDE;
