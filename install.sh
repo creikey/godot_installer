@@ -4,7 +4,7 @@ install_godot_desktop() {
         cp godot.desktop ~/.local/share/applications
         cp godot.desktop ~/Desktop/
         sudo chmod +x ~/Desktop/godot.desktop
-        update-desktop-database
+        sudo update-desktop-database
 }
 
 install_godot_icon() {
